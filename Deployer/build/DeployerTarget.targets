@@ -1,0 +1,8 @@
+﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="Deployer" AssemblyFile="$(MSBuildThisFileDirectory)DeployerTarget.dll" />
+
+  <Target Name="Deployer" DependsOnTargets="Publish">
+    <Deployer 
+      ApplicationName="$(ApplicationName)" />
+  </Target>
+</Project>
