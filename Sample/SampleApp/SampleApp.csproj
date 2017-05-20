@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <VersionPrefix>0.1.0</VersionPrefix>
     <VersionSuffix>preview</VersionSuffix>
     <PackageId>DeployerSampleApp</PackageId>
+    <RuntimeFrameworkVersion>2.0.0-preview2-25312-01</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DeployerTarget" Version="0.1.13-preview" />
+    <PackageReference Include="DeployerTarget" Version="0.1.14-preview" />
   </ItemGroup>
   
 
