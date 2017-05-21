@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.Build.Framework;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Http;
 
 namespace DeployerTarget
 {
@@ -41,6 +42,49 @@ namespace DeployerTarget
                 File.Delete(tempFile);
             }
         }
+
+        private bool PostZippedFileToHttp(string path, string uriString)
+        {
+            HttpContent streamContent = new StreamContent(File.OpenRead(path));
+            using (var client = new HttpClient())
+            {
+                using (var formData = new MultipartFormDataContent())
+                {
+                    formData.Add(streamContent, "files", Path.GetFileName(path));
+                    HttpResponseMessage response = client.PostAsync(new Uri(uriString), formData).Result;
+                    if (!response.IsSuccessStatusCode)
+                        Debug.WriteLine("Failed to send");
+
+                    Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
+                }
+            }
+        }
+
+        //[HttpPost("upload-files")]
+        //[AllowAnonymous]
+        //public Task<string> FileUploadAction(IFormFileCollection files)
+        //{
+        //    var sb = new StringBuilder().AppendLine("** File upload **").AppendLine($"File count: {files.Count}");
+        //    foreach (var file in files)
+        //    {
+        //        if (file.Length > 0 && file.FileName.EndsWith(".zip", StringComparison.CurrentCultureIgnoreCase))
+        //        {
+        //            using (Stream zipStream = file.OpenReadStream())
+        //            {
+        //                m_ProjectPackage.LoadProjectZipToRepository(zipStream);
+        //            }
+        //            sb.AppendLine($"Did unzip file {file.FileName}");
+        //        }
+        //        else if (file.Length > 0 && file.FileName.EndsWith(".override", StringComparison.CurrentCultureIgnoreCase))
+        //        {
+        //            using (Stream s = file.OpenReadStream())
+        //            {
+        //                m_ProjectPackage.StoreGlobalTagsOverrideAsync(s).ConfigureAwait(false);
+        //            }
+        //        }
+        //    }
+        //    return Task.FromResult(sb.ToString());
+        //}
 
         public override bool Execute()
         {
