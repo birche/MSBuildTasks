@@ -13,6 +13,7 @@
       ApplicationName="$(AssemblyName)" 
       ApplicationVersion="$(Version)"
       Rid="$(RuntimeIdentifier)"
+      UploadAddress="$(UploadAddress)"
       />
   </Target>
 </Project>

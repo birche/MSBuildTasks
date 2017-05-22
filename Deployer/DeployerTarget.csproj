@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Symphony deployer</Description>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <VersionPrefix>0.1.18-preview</VersionPrefix>
+    <VersionPrefix>0.1.22-preview</VersionPrefix>
     <AssemblyName>DeployerTarget</AssemblyName>
   </PropertyGroup>
 

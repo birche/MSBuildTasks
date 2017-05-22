@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.Build.Framework;
 using System.IO;
 using System.IO.Compression;
+using System.Linq.Expressions;
 using System.Net.Http;
 
 namespace DeployerTarget
@@ -14,6 +15,7 @@ namespace DeployerTarget
         public string ApplicationName { get; set; }
         public string ApplicationVersion { get; set; }
         public string Rid { get; set; }
+        public string UploadAddress { get; set; }
 
         private string ZipPublishedOutput()
         {
@@ -58,6 +60,7 @@ namespace DeployerTarget
                     Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
                 }
             }
+            return true;
         }
 
         //[HttpPost("upload-files")]
@@ -95,10 +98,10 @@ namespace DeployerTarget
             Log.LogMessage(MessageImportance.High, $"ApplicationName={ApplicationName}");
             Log.LogMessage(MessageImportance.High, $"ApplicationVersion={ApplicationVersion}");
             Log.LogMessage(MessageImportance.High, $"Rid={Rid}");
-
+            string zipFile;
             try 
             {
-                var zipFile = ZipPublishedOutput();
+                zipFile = ZipPublishedOutput();
                 Log.LogMessage(MessageImportance.High, $"Published output is now packed to the file {zipFile}");
             }
             catch
@@ -106,7 +109,14 @@ namespace DeployerTarget
                 Log.LogError("Failed to zip the published output");
                 return false;
             }
-            return true;
+            if (string.IsNullOrEmpty(UploadAddress))
+            {
+                Log.LogMessage(MessageImportance.High, "Upload address is empty. Finishing pack..");
+                return false;
+            }
+            var result = PostZippedFileToHttp(zipFile, UploadAddress);
+            Log.LogMessage(MessageImportance.High, $"Did upload to {UploadAddress}");
+            return result;
         }
     }
 }
